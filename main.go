@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	// "io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -56,7 +56,10 @@ func kino(c echo.Context) error {
 		newpg := pg + count
 		url := "https://www.kinokuniya.co.jp/disp/CSfDispListPage_001.jsp?qs=true&ptk=01&q=" + q + "&p=" + strconv.Itoa(newpg)
 		// fmt.Println(url)
-		doc, _ := goquery.NewDocument(url)
+		doc, err := goquery.NewDocument(url)
+		if err != nil {
+			fmt.Println(err)
+		}
 		// doc.Find("h3.heightLine-2").Each(func(index int, s *goquery.Selection) {
 		doc.Find("div.list_area").Each(func(index int, s *goquery.Selection) {
 			// doc.Find("h3.list-rst__rst-name > a").Each(func(index int, s *goquery.Selection) {
@@ -81,7 +84,7 @@ func kino(c echo.Context) error {
 			// dsc := s.Children().Next().Text()
 			// data.Text = dsc
 			img, err := s.Find("div.listphoto > a.thumbnail_box > img").Attr("src")
-			if err == false {
+			if !err {
 				img = "testest"
 			} else {
 				img = "https://www.kinokuniya.co.jp" + img[2:]
@@ -117,7 +120,10 @@ func tsutaya(c echo.Context) error {
 	// url := "https://tsutaya.tsite.jp/search?dm=0&ds=1&st=0&p=" + strconv.Itoa(i) + "&ic=3&k=" + q
 	url := "https://tsutaya.tsite.jp/search?dm=0&ds=1&st=0&p=" + pg + "&ic=3&k=" + q
 	// fmt.Println(url)
-	doc, _ := goquery.NewDocument(url)
+	doc, err := goquery.NewDocument(url)
+	if err != nil {
+		fmt.Println(err)
+	}
 	doc.Find("div.c_unit_col-main_in > ul.c_thumb_list_row > li").Each(func(index int, s *goquery.Selection) {
 		// doc.Find("li > div > div.c_thumb_info").Each(func(index int, s *goquery.Selection) {
 		// doc.Find("h3.list-rst__rst-name > a").Each(func(index int, s *goquery.Selection) {
@@ -150,12 +156,12 @@ func tsutaya(c echo.Context) error {
 	return c.JSON(http.StatusOK, arr)
 }
 
-type Page struct {
-	Title string
-	Body  []byte
-}
+// type Page struct {
+// 	Title string
+// 	Body  []byte
+// }
 
-func (p *Page) save() error {
-	filename := p.Title + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
-}
+// func (p *Page) save() error {
+// 	filename := p.Title + ".txt"
+// 	return ioutil.WriteFile(filename, p.Body, 0600)
+// }
