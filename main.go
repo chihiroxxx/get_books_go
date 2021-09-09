@@ -15,7 +15,7 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
-	e.GET("/", test)
+	e.GET("/api/go/books/", test)
 	e.GET("/api/go/books/kino", kino)
 	e.GET("/api/go/books/tsutaya", tsutaya)
 	e.Logger.Fatal(e.Start(":9090"))
