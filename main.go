@@ -15,6 +15,7 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
+	e.GET("/", test)
 	e.GET("/api/go/books/kino", kino)
 	e.GET("/api/go/books/tsutaya", tsutaya)
 	e.Logger.Fatal(e.Start(":9090"))
@@ -29,6 +30,9 @@ type Scraping struct {
 	Image string `json:"imageUrl"`
 }
 
+func test(c echo.Context) error {
+	return c.JSON(http.StatusOK, "hello go!!!")
+}
 func kino(c echo.Context) error {
 	// まずReactからURLparamsで送ることにする
 	// https://www.kinokuniya.co.jp/f/dsd---?p=1 &qs=true&ptk=01&  q=react
